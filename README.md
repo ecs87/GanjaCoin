@@ -8,8 +8,8 @@ Maturity: 30 Blocks<br>
 Stake Minimum Age: 1/2 Hours<br>
 <br><br>
 Default Network Ports:<br>
-Port: 11419<br>
-RPC Port: 11420<br>
+Port: 12419<br>
+RPC Port: 12420<br>
 
 Website: https://ganjacoinpro.com
 
