@@ -108,7 +108,7 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
     // NovaCoin: check prefix
-    if(uri.scheme() != QString("Ganjaproject"))
+    if(uri.scheme() != QString("ganjaproject"))
         return false;
 
     SendCoinsRecipient rv;
@@ -162,9 +162,9 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
     //
     //    Cannot handle this later, because bitcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("Ganjaproject://", Qt::CaseInsensitive))
+    if(uri.startsWith("ganjaproject://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 11, "Ganjaproject:");
+        uri.replace(0, 11, "ganjaproject:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
