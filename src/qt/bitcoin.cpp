@@ -27,6 +27,8 @@
 #include <QTranslator>
 #include <QSplashScreen>
 #include <QLibraryInfo>
+#include <QSettings>
+#include <QDir>
 
 #if defined(BITCOIN_NEED_QT_PLUGINS) && !defined(_BITCOIN_QT_PLUGINS_INCLUDED)
 #define _BITCOIN_QT_PLUGINS_INCLUDED
@@ -42,6 +44,24 @@ Q_IMPORT_PLUGIN(qtaccessiblewidgets)
 // Need a global reference for the notifications to find the GUI
 static BitcoinGUI *guiref;
 static QSplashScreen *splashref;
+
+//Registry entry so URIs will work
+static void handleURIs(QString currentExecDir) {
+    QSettings settingsRoot("HKEY_CLASSES_ROOT\\ganjaproject", QSettings::NativeFormat);
+    settingsRoot.setValue("Default", "URL:Ganjaproject Custom Protocol");
+    settingsRoot.setValue("FriendlyTypeName", "MRJA URI");
+    settingsRoot.setValue("URL Protocol", "");
+
+    QSettings settingsDefaultIcon("HKEY_CLASSES_ROOT\\ganjaproject\\DefaultIcon", QSettings::NativeFormat);
+    settingsDefaultIcon.setValue("Default", currentExecDir + "\\Ganjaproject-qt.exe,0");
+
+    QSettings settingsShell("HKEY_CLASSES_ROOT\\ganjaproject\\shell", QSettings::NativeFormat);
+    settingsShell.setValue("Default", "");
+    QSettings settingsShellOpen("HKEY_CLASSES_ROOT\\ganjaproject\\shell\\open", QSettings::NativeFormat);
+    settingsShellOpen.setValue("Default", "");
+    QSettings settingsShellOpenCmd("HKEY_CLASSES_ROOT\\ganjaproject\\shell\\open\\command", QSettings::NativeFormat);
+    settingsShellOpenCmd.setValue("Default", "\"" + currentExecDir + "\\Ganjaproject-qt.exe\" \"%1\"");
+}
 
 static void ThreadSafeMessageBox(const std::string& message, const std::string& caption, unsigned int style)
 {
@@ -316,6 +336,12 @@ int main(int argc, char *argv[])
     } catch (...) {
         handleRunawayException(NULL);
     }
+	
+	//add registry entry for URIs
+	QDir dir;
+	const QString currentExecDir = QDir::toNativeSeparators(dir.absolutePath());
+	if (!currentExecDir.contains("Google") && !currentExecDir.contains("Chrome")) //for some reason, Chrome hijacks the currentExecDir upon click of a URI...ignore this
+		handleURIs(currentExecDir);
     return 0;
 }
 #endif // BITCOIN_QT_TEST
